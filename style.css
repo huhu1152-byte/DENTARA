@@ -1415,6 +1415,26 @@ body.patient-mode { background: #eef5fc; }
 
 .ob-next { max-width: 320px; }
 
+/* شاشات التعريف الأولى الآن بأسلوب splash-wrap (ملء الشاشة) بدل البطاقة
+   القديمة، مع زر تالٍ ونقاط عائمين فوق الصورة بدل التخطيط العمودي */
+.ob-next-fs {
+    position: absolute;
+    bottom: 22px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+    z-index: 5;
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+#onboardWrap .ob-dots {
+    position: absolute;
+    bottom: 92px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    margin: 0;
+}
+
 /* ==========================================================
    شاشة اكتمال التقييم + ملخص القسم (completePage)
    ========================================================== */
