@@ -1237,9 +1237,9 @@ body.patient-mode { background: #eef5fc; }
 }
 .dev-credit-idea {
     margin-top: 3px;
-    color: #a5828d; /* رصاصي مايل للوردي، يطبَّق على العبارة كلها */
+    color: #c8a1ac; /* رصاصي فاتح مايل للوردي، أفتح من السابق */
 }
-.credit-name-pink { font-weight: 600; }
+.credit-name-pink { color: inherit; font-weight: 600; }
 
 /* ==========================================================
    مركز المعرفة (الإحصائيات المجمَّعة)

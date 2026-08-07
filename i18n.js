@@ -249,8 +249,8 @@ const STR = {
                             ar: "هذا هو القالب الافتراضي لدفتر كل مريض جديد، إلا إذا خصّصه الطبيب لمريضه تحديدًا." },
     bookletTemplateAdminOnly: { en: "Only the administrator can edit the default booklet template.",
                                  ar: "المدير فقط يمكنه تعديل القالب الافتراضي للدفتر." },
-    designedByLbl: { en: "Design: Hussein Mahmoud", ar: "تصميم: حسين محمود" },
-    ideaByLbl:     { en: "Idea:", ar: "فكرة:" },
+    designedByLbl: { en: "Build & Development: Hussein Mahmoud", ar: "بناء وبرمجة: حسين محمود" },
+    ideaByLbl:     { en: "Idea & Follow-up:", ar: "فكرة ومتابعة:" },
     rawanName:     { en: "Rawan Jamil", ar: "روان جميل" },
     startFollowUp:   { en: "Start Follow-up Assessment", ar: "بدء تقييم المتابعة" },
 
