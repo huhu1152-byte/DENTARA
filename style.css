@@ -1235,11 +1235,11 @@ body.patient-mode { background: #eef5fc; }
     margin-top: 20px;
     letter-spacing: .2px;
 }
-.dev-credit-idea { margin-top: 3px; }
-.credit-name-pink {
-    color: #d9639b;
-    font-weight: 600;
+.dev-credit-idea {
+    margin-top: 3px;
+    color: #a5828d; /* رصاصي مايل للوردي، يطبَّق على العبارة كلها */
 }
+.credit-name-pink { font-weight: 600; }
 
 /* ==========================================================
    مركز المعرفة (الإحصائيات المجمَّعة)
