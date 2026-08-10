@@ -4,13 +4,16 @@
 //==============================
 
 // رابط صفحة المريض لهذا التقييم (يُشفَّر داخل رمز QR)
-function patientPageUrl(recordId) {
+// videosOnly=true: رابط مخصّص لصفحة الفيديوهات المقترحة فقط (تُستخدم لرمز
+// QR المطبوع على الدفتر تحديدًا) — يفتح المريض الرابط ويشاهد الفيديوهات
+// مباشرة دون المرور بباقي تفاصيل خطته
+function patientPageUrl(recordId, videosOnly = false) {
     const base = location.origin + location.pathname;
-    return `${base}?a=${encodeURIComponent(recordId)}`;
+    return `${base}?a=${encodeURIComponent(recordId)}${videosOnly ? "&view=videos" : ""}`;
 }
 
 // تحميل تقييم واحد فقط (بدون بقية بيانات النظام) لعرضه للمريض
-async function openPatientView(recordId) {
+async function openPatientView(recordId, videosOnly = false) {
     showPage("patientViewPage");
     $("pvBody").innerHTML = `<div class="pv-loading"><div class="spinner"></div><p>${t("loading")}</p></div>`;
 
@@ -28,16 +31,16 @@ async function openPatientView(recordId) {
         }
 
         App.videos = videos;
-        renderPatientView(rec);
+        renderPatientView(rec, videosOnly);
     } catch (err) {
         console.error(err);
         $("pvBody").innerHTML = `<div class="pv-error"><i class="fa-solid fa-triangle-exclamation"></i>
             <p>${escapeHtml(err.message || "")}</p>
-            <button class="btn-primary" onclick="openPatientView('${escapeHtml(recordId)}')">${t("retry")}</button></div>`;
+            <button class="btn-primary" onclick="openPatientView('${escapeHtml(recordId)}', ${videosOnly})">${t("retry")}</button></div>`;
     }
 }
 
-function renderPatientView(rec) {
+function renderPatientView(rec, videosOnly = false) {
     let instructions = [], barriers = [];
     try { instructions = JSON.parse(rec.instructions || "[]"); } catch (e) {}
     try { barriers = JSON.parse(rec.barriers || "[]"); } catch (e) {}
@@ -49,6 +52,32 @@ function renderPatientView(rec) {
 
     const ar = LANG === "ar";
     const cls = riskClass(rec.riskLevel);
+
+    // وضع "فيديوهات فقط": يُستخدم لرمز QR المطبوع على الدفتر — صفحة
+    // مبسّطة تعرض فيديوهات المريض مباشرة بدل خطته الكاملة
+    if (videosOnly) {
+        $("pvBody").innerHTML = `
+            <div class="pv-hero">
+                <i class="fa-solid fa-circle-play"></i>
+                <h1>${ar ? "فيديوهاتك التعليمية" : "Your Educational Videos"}</h1>
+                <p>${escapeHtml(rec.patientName || "")}</p>
+            </div>
+            ${vids.length ? `
+            <div class="pv-card">
+                ${vids.map(v => `
+                    <a class="pv-video" href="${escapeHtml(v.url)}" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-circle-play"></i>
+                        <span><b>${escapeHtml(v.title || "Video")}</b>${v.description ? `<span>${escapeHtml(v.description)}</span>` : ""}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square pv-ext"></i>
+                    </a>`).join("")}
+            </div>` : `
+            <div class="pv-card"><p style="color:#888;font-size:13px;">${t("noVideos")}</p></div>`}
+            <p class="pv-foot">
+                ${escapeHtml(pick(CONFIG.PROJECT.universityEn, CONFIG.PROJECT.university))} —
+                ${escapeHtml(pick(CONFIG.PROJECT.collegeEn, CONFIG.PROJECT.college))}
+            </p>`;
+        return;
+    }
 
     $("pvBody").innerHTML = `
         <div class="pv-hero">
@@ -116,7 +145,8 @@ function renderPatientView(rec) {
             ${escapeHtml(pick(CONFIG.PROJECT.collegeEn, CONFIG.PROJECT.college))}<br>
             ${ar ? "هذه إرشادات توعوية ولا تغني عن مراجعة طبيبك." : "Educational guidance only — it does not replace your dentist."}
         </p>
-        <p class="dev-credit">Developed by Hussein Mahmoud Shaker</p>`;
+        <p class="dev-credit">${t("designedByLbl")}</p>
+        <p class="dev-credit dev-credit-idea">${t("ideaByLbl")} <span class="credit-name-pink">${t("rawanName")}</span></p>`;
 
     restorePvTicks();
 }

@@ -1,0 +1,12 @@
+function getSheetOrThrow(name) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    // بدل رفض الطلب بخطأ "لا يوجد تبويب بهذا الاسم"، ننشئ التبويب تلقائيًا
+    // لو كان غير موجود. الأعمدة تُضاف لاحقًا تلقائيًا بواسطة ensureHeaders
+    // فما داعي لإنشائها يدويًا هنا. هذا يلغي مشكلة نسيان إنشاء تبويب جديد
+    // (متل BookletTemplate) قبل استخدام أي ميزة تعتمد عليه.
+    sheet = ss.insertSheet(name);
+  }
+  return sheet;
+}
