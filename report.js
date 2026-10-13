@@ -144,10 +144,9 @@ function _renderResults(r) {
 
     show($("resultActions"));
     const owned = canEditRecord(App.current.record);
-    const editBtn = $("editResultsBtn"), reBtn = $("reanalyzeBtn"), eaBtn = $("editAnswersBtn");
+    const editBtn = $("editResultsBtn"), reBtn = $("reanalyzeBtn");
     if (editBtn) editBtn.classList.toggle("hidden", !owned);
     if (reBtn) reBtn.classList.toggle("hidden", !owned);
-    if (eaBtn) eaBtn.classList.toggle("hidden", !owned);
     showPage("resultsPage");
 }
 
@@ -172,49 +171,6 @@ function renderFollowUpBanner() {
                 <i class="fa-solid fa-rotate"></i> ${t("startFollowUp")}
             </button>` : ""}
         </div>`;
-}
-
-// ======== عرض سريع لكل إجابات المريض (قراءة فقط، مع اختصار لتعديلها) ========
-function viewPatientAnswers(recordId) {
-    const record = App.assessments.find(x => String(x.id) === String(recordId));
-    if (!record) return;
-
-    let answers = {};
-    try { answers = JSON.parse(record.answers || "{}"); } catch (e) { answers = {}; }
-
-    const sections = SECTIONS.filter(s => App.questions.some(q => (q.section || "dental") === s.key));
-    let anyAnswered = false;
-
-    let html = `
-        <div class="review-patient">
-            <b>${escapeHtml(record.patientName || "")}</b>
-            <span>${t("age")}: ${escapeHtml(record.age || "-")}${record.gender ? " • " + escapeHtml(record.gender) : ""}</span>
-        </div>`;
-
-    sections.forEach(s => {
-        const qs = App.questions.filter(q => (q.section || "dental") === s.key);
-        const answered = qs.filter(q => answers[q.id] && String(answers[q.id]).trim());
-        if (!answered.length) return;
-        anyAnswered = true;
-        html += `<h3 style="margin:16px 0 8px;font-size:14px;color:#555;"><i class="fa-solid ${s.icon}"></i> ${escapeHtml(sectionTitle(s))}</h3>`;
-        html += answered.map(q => `
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.5;">
-                <b>${escapeHtml(qText(q))}</b><br>${escapeHtml(answers[q.id])}
-            </p>`).join("");
-    });
-
-    if (!anyAnswered) html += `<p class="modal-note">${t("noAnswers")}</p>`;
-
-    const owned = canEditRecord(record);
-    openModal(t("viewAnswers"), html,
-        owned ? () => { closeModal(); editAnswersFlow(record.id); } : null,
-        t("editAndReanalyze"));
-}
-
-function viewPatientAnswersCurrent() {
-    const rec = App.current && App.current.record;
-    if (!rec) { showToast(t("noRecords"), "error"); return; }
-    viewPatientAnswers(rec.id);
 }
 
 // ======== نافذة "لماذا اقترح الذكاء الاصطناعي هذا؟" ========
@@ -261,9 +217,6 @@ function _showResultsUnanalyzed(record, err) {
             ${owned ? `
             <button class="btn-primary" onclick="retryAnalysis('${escapeHtml(record.id)}')">
                 <i class="fa-solid fa-rotate-right"></i> ${t("retry")}
-            </button>
-            <button class="btn-ghost" onclick="viewPatientAnswers('${escapeHtml(record.id)}')">
-                <i class="fa-solid fa-list-check"></i> ${t("viewAnswers")}
             </button>` : `<p class="unanalyzed-reason">${t("notOwner")}</p>`}
         </div>`;
     hide($("resultActions"));
