@@ -152,8 +152,8 @@ function renderInsights() {
             <p>${t("knowledgeCenterNote")}</p>
         </div>
 
-        <button class="btn-ghost" onclick="exportAllToWord()">
-            <i class="fa-solid fa-file-word"></i> ${t("exportWord")}
+        <button class="btn-ghost" onclick="exportAllToExcel()">
+            <i class="fa-solid fa-file-excel"></i> ${t("exportExcel")}
         </button>
     `;
 }
